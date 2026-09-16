@@ -1,99 +1,103 @@
 #include <iostream>
 
-struct list{
+
+struct list {
     char value;
-    list * next;
+    list *next;
 };
 
-int ins( list** head, char value){
+
+class Stack{
+private:
+    list *head;
+public:
+    Stack();
+    void ins(char value);
+    int pop();
+    int empty();
+    char top();
+    void clear();
+};
+
+
+Stack::Stack() : head(nullptr){}
+
+
+void Stack::ins(char value){
     list* new_list = new list;
     new_list->value = value;
-    if (!*head){
-        new_list -> next = nullptr;
-        *head = new_list;
-        return 1;
-    }
-    new_list -> next = *head;
-    *head = new_list;
-    return 0;
+    new_list -> next = head;
+    head = new_list;
 }
 
 
-int pop( list** head){
-    if (*head == nullptr) {
+int Stack::pop(){
+    if (head == nullptr) {
         return -1;
     }
-    list * tmp = *head;
-    *head = (*head) -> next;
-    free(tmp);
+    list * tmp = head;
+    head = head -> next;
+    delete tmp;
     return 0;
 }
 
 
-void printing( list * head){
-    if (head){
-        printing(head->next);
-        if (head->next){
-            printf("; ");
-        }
-        if (head->value>=0){
-            printf("+%d", head->value);
-        }
-        else{
-            printf("%d", head->value);
-        }
+int Stack::empty(){
+    return head == nullptr;
+}
+
+
+char Stack::top(){
+    return head -> value;
+}
+
+
+void Stack::clear(){
+    while (head != nullptr){
+        list* tmp = head;
+        head = head->next;
+        delete tmp;
     }
 }
 
 
 int main(){
+    Stack stack;
     int tmp_command = -1;
-    char value;
-    list* head = nullptr;
-    while (tmp_command != 0){
-        std::cin >> tmp_command;
+    while (std::cin >> tmp_command && tmp_command != 0){
         if (tmp_command == 1){
-            scanf(" %c", &value);
-            ins(&head, value);
+            char value;
+            std::cin >> value;
+            stack.ins(value);
         }
         if (tmp_command == 2){
-            if (head != nullptr){
-                pop(&head);
+            if (!stack.empty()){
+                stack.pop();
             }
             else{
-                printf("Stack is empty\n");
+                std::cout << "Stack is empty\n";
             }
         }
         if (tmp_command == 3){
-            if (head != nullptr){
-                printf("%c\n", head->value);
+            if (!stack.empty()){
+                std::cout << stack.top() << '\n';
             }
             else{
-                printf("Stack is empty\n");
+                std::cout << "Stack is empty\n";
             }
         }
         if (tmp_command == 4){
-            if (head != nullptr){
-                printf("0\n");
+            if (!stack.empty()){
+                std::cout << "0\n";
             }
             else{
-                printf("1\n");
+                std::cout << "1\n";
             }
         }
         if (tmp_command == 5){
-            while (head != nullptr){
-                list * tmp = head;
-                head = head->next;
-                free (tmp);
-            }
+            stack.clear();
         }
     }
-    list* tmp = head;
-    list* next;
-    while (tmp){
-        next = (*tmp).next;
-        free(tmp);
-        tmp = next;
-    }
+    stack.clear();
     return 0;
 }
