@@ -8,15 +8,81 @@ private:
     int capacity;
 public:
     Stack();
+    Stack(int begin_capacity);
+    Stack(Stack & stack2);
+    Stack(Stack && stack2);
+    Stack(int n, char * value);
     void ins(char value);
     int pop();
     int empty();
     char top();
     void clear();
+    ~Stack();
 };
 
 
 Stack::Stack() : arr(nullptr), size(0), capacity(0){}
+
+Stack::Stack(int initial_capacity){
+    if (initial_capacity <= 0){
+        arr = nullptr;
+        size = 0;
+        capacity = 0;
+    }
+    else{
+        capacity = initial_capacity;
+        size = 0;
+        arr = new char[capacity];
+    }
+}
+
+Stack::Stack(Stack&& stack2){
+    arr = stack2.arr;
+    size = stack2.size;
+    capacity = stack2.capacity;
+
+    stack2.arr = nullptr;
+    stack2.size = 0;
+    stack2.capacity = 0;
+}
+
+Stack::Stack(Stack & stack2){
+    size = stack2.size;
+    capacity = stack2.capacity;
+
+    arr = new char[capacity];
+    if (capacity > 0) {
+        for (int i = 0; i < size; i++) {
+            arr[i] = stack2.arr[i];
+        }
+    }
+    else{
+        arr = nullptr;
+    }
+}
+
+Stack::Stack(int n, char* value){
+    if (n <= 0){
+        arr = nullptr;
+        size = 0;
+        capacity = 0;
+    }
+    else{
+        size = n;
+        capacity = n + 1;
+        arr = new char[capacity];
+        for (int i = 0; i < size; i++){
+            arr[i] = value[i];
+        }
+    }
+}
+
+Stack::~Stack(){
+    delete[] arr;
+    arr = nullptr;
+    size = 0;
+    capacity = 0;
+}
 
 
 void Stack::ins(char value){
@@ -108,6 +174,5 @@ int main(){
                 break;
         }
     }
-    stack.clear();
     return 0;
 }
