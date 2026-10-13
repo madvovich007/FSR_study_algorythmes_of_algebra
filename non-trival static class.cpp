@@ -14,17 +14,17 @@ private:
     static int GPUmodel;
     static int RAM;
     static int SSD;
-    static char screen;//i - ips, v - VA, O - OLED
+    static char screen;//i - ips, v - VA, o - OLED
     static int width;
     static int hight;
     static int HZ;
-
-    static char * copystr(char * str);
 public:
     Programm(char * name, int ram, int cpu, int gpu, int hz, int  size = 0);
     Programm();
+    Programm(Programm & programm2);
+    Programm(Programm && programm2);
     ~Programm();
-
+    static char * copystr(char * str);
     void set_name(char * newname);
     void set_minRAM(int ram);
     void set_minCPU(int cpu);
@@ -88,7 +88,7 @@ int Programm::HZ = 0;
 Programm::Programm() : name(nullptr), minRAM(0), minCPU(0), minGPU(0), minHZ(0), size(0){}
 
 Programm::Programm(char * programName, int ram, int cpu, int gpu, int hz, int  size): name(copystr(programName)), minRAM(ram), minCPU(cpu), minGPU(gpu), minHZ(hz),  size(0){
-    if ( size > 0 && !set_size(size)){
+    if (size > 0 && !set_size(size)){
         std::cout << "Недостаточно места на диске для " << get_name();
     }
 }
@@ -170,10 +170,10 @@ int Programm::set_Screen(char type){
             screen = 'v';
             return 1;
         case 'o':
-            screen = 'O';
+            screen = 'o';
             return 1;
         case 'O':
-            screen = 'O';
+            screen = 'o';
             return 1;
         default:
             return 0;
@@ -273,21 +273,39 @@ int main(){
     Programm::set_RAM(32);
     Programm::set_SSD(1000);
     Programm::set_Screen('o');
-    Programm::set_Resolution(2560, 1440);
+    Programm::set_Resolution(3120, 2080);
     Programm::set_HZ(240);
-    std::cout << "Свободно на SSD: " << Programm::get_SSD() << "ГБ\n";
-
-    Programm aimp("AIMP", 1, 3, 0, 0, 1);
-    Programm music("Яндекс Музыка", 2, 3, 0, 0, 2);
-    Programm cs("Counter-Strike 2", 8, 5, 2060, 60, 40);
-    Programm GTA6("GTA 6", 32, 9, 5090, 120, 200);
-    Programm word("Microsoft Word", 4, 3, 0, 60, 5);
-    Programm excel("Microsoft Excel", 4, 3, 0, 60, 4);
-    Programm pycharm("PyCharm", 8, 5, 0, 60, 15);
-    Programm clion("CLion", 8, 5, 0, 60, 12);
-    Programm chrome("Google Chrome", 4, 5, 0, 60, 3);
-    std::cout << "Свободно на SSD: " << Programm::get_SSD() << "ГБ\n";
-    std::cout << "ГТА запустится:" << GTA6.canRun() << "\n";
-    
+    int ssd = Programm::get_SSD();
+    Programm Telegramm;
+    Telegramm.set_minCPU(5);
+    Telegramm.set_minGPU(0);
+    Telegramm.set_minRAM(4);
+    Telegramm.set_size(10);
+    Telegramm.set_minHZ(60);
+    char name_tg[] = {'T', 'e', 'l', 'e', 'g', 'r', 'a', 'm', '\0'};
+    char name_aimp[] = {'A', 'i', 'm', 'p', '\0'};
+    char name_music[] = {'Y', 'a', 'n', 'd', 'e', 'x', 'm', 'u', 's', 'i', 'c', '\0'};
+    char name_cs[] = {'C', 'S', '2'};
+    char name_GTA[] = {'G', 'T', 'A', '6', '\0'};
+    char name_word[] = {'W', 'o', 'r', 'd', '\0'};
+    char name_exel[] = {'E', 'x', 'c', 'e', 'l', '\0'};
+    char name_pycharm[] = {'P', 'y', 'c', 'h', 'a', 'r', 'm', '\0'};
+    char name_clion[] = {'C', 'l', 'i', 'o', 'n', '\0'};
+    char name_chrome[] = {'C', 'h', 'r', 'o', 'm', 'e', '\0'};
+    Telegramm.set_name(name_tg);
+    Programm aimp(name_aimp, 1, 3, 0, 0, 1);
+    Programm music(name_music, 2, 3, 0, 0, 2);
+    Programm cs(name_cs, 8, 5, 2060, 60, 40);
+    Programm GTA6(name_GTA, 32, 5, 3070, 120, 200);
+    Programm word(name_word, 4, 3, 0, 60, 5);
+    Programm excel(name_exel, 4, 3, 0, 60, 4);
+    Programm pycharm(name_pycharm, 8, 5, 0, 60, 15);
+    Programm clion(name_clion, 8, 5, 0, 60, 12);
+    Programm chrome(name_chrome, 4, 5, 0, 60, 3);
+    std::cout << "Текущие комплектующие:\nПроцессор Intel I" << Programm::get_CPUseries() << "\nВидеокарта RTX " << Programm::get_GPUmodel()<<"\nЭкран (i - ips, v - VA, o - OLED) " << Programm ::get_screen() << "\nРазрешение:" << Programm::get_width << "*" << Programm::get_hight << ", частота обновления " << Programm::get_HZ()<< "\n";
+    std::cout << "Свободно на SSD: " << Programm::get_SSD() << "ГБ из " << ssd << "ГБ\nОперативная память " << Programm::get_RAM() << "ГБ\n";
+    std::cout << "ГТА запустится/не запустится - 1/0:   " << GTA6.canRun() << "\n";
+    std::cout << "Для Яндекс Музыки нужно " << music.get_minRAM() << "ГБ RAM, процессор серии не меньше 3" << music.get_minCPU() << "\n";
+    std::cout << "Для GTA 6 нужна видеокарта " << GTA6.get_minGPU() << ", рекомендуется работа для FPS не менее " << GTA6.get_minHZ() << ", приложение занимает " << GTA6.get_size() << "ГБ\n";
     return 0;
 }
