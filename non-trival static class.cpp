@@ -21,8 +21,6 @@ private:
 public:
     Programm(char * name, int ram, int cpu, int gpu, int hz, int  size = 0);
     Programm();
-    Programm(Programm & programm2);
-    Programm(Programm && programm2);
     ~Programm();
     static char * copystr(char * str);
     void set_name(char * newname);
