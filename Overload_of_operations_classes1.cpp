@@ -30,7 +30,7 @@ public:
     friend Colour operator-(Colour& c1, Colour& c2);
     friend Colour operator+(Colour& c1, int c2);
     friend Colour operator-(Colour& c1, int c2);
-    friend Colour operator*(Colour& c1, int coefficient);
+    friend Colour operator*(int coefficient, Colour& c1);
     friend Colour operator-(Colour& c1);
     friend std::ostream & operator<<(std::ostream & out, const Colour& c);
     friend std::istream & operator>>(std::istream & in, Colour& c);
@@ -55,7 +55,7 @@ Colour operator-(Colour& c1, int c2) {
     return Colour(max(c1.red - c2, 0), max(c1.green - c2, 0), max(c1.blue - c2, 0));
 }
 
-Colour operator*(Colour& c1, int coefficient) {
+Colour operator*(int coefficient, Colour& c1) {
     return Colour(c1.red * coefficient, c1.green * coefficient, c1.blue * coefficient);
 }
 
@@ -86,9 +86,15 @@ Colour::operator bool(){
 
 int main() {
     Colour colour1(100, 101, 102);
-    Colour colour2(100, 101, 102);
-    std::cout << colour1 + colour2 << ',' << colour1 - colour2 << '\n';
+    Colour colour2(100, 101, 100);
+    Colour colour3 = 2 * colour2;
+    Colour colour4;
+    std::cin >> colour4;
+    std::cout << colour1 + colour2 << ", " << colour1 - colour2 << '\n';
+    std::cout << -colour4 << '\n';
+    std::cout << colour3 + 8 << ", " << colour3 - 8 << '\n';
     std::cout << (double)colour1 << '\n';
     std::cout << (bool)colour2 << '\n';
+    std::cout << colour3 << '\n';
 }
 

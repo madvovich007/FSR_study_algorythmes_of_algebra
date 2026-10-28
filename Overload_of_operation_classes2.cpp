@@ -86,9 +86,12 @@ fraction::operator bool(){
 }
 
 int main() {
-    fraction fraction1(100, 101);
-    fraction fraction2(102, 101);
-    std::cout << fraction1 + fraction2 << ',' << fraction1 - fraction2 << '\n';
+    fraction fraction1(108, 101);
+    fraction fraction2;
+    std::cin >> fraction2;
+    std::cout << fraction1 + fraction2 << ", " << fraction1 - fraction2 << '\n';
+    std::cout << fraction1 + 5 << ", " << fraction1 - 5 << '\n';
+    std::cout << fraction1 + (-fraction2) << ", " << fraction1 * fraction2 << '\n';
     std::cout << (double)fraction1 << '\n';
     std::cout << (bool)fraction2 << '\n';
 }
