@@ -32,7 +32,7 @@ protected:
     double w;
 public:
     Colour(): x(0), y(0), z(0), w(0) {};
-    virtual ~Colour();
+    virtual ~Colour(){};
     Colour(double r, double g, double b, double w): x(min(max(r, 0), MAX_colour)), y(min(max(g, 0), MAX_colour)), z(min(max(b, 0), MAX_colour)), w(min(max(0, w), 1)) {};
     friend Colour operator+(const Colour& c1, const Colour& c2);
     friend std::ostream & operator<<(std::ostream & out, const Colour& c);
@@ -44,7 +44,7 @@ class RGB: public Colour {
 public:
     RGB(): Colour(0,0,0,1) {};
     RGB(double r, double g, double b, double w): Colour(r, g, b, w) {};
-    ~RGB();
+    ~RGB(){};
     bool is_black() const override{
         if (x < tol && y < tol && z < tol && abs(w -1) < tol){
             return true;
@@ -87,7 +87,7 @@ class CMYK: public Colour {
 public:
     CMYK(): Colour(0, 0, 0, 0) {};
     CMYK(double x, double y, double z, double w):  Colour(x, y, z, w){};
-    ~CMYK() {}
+    ~CMYK() {};
     bool is_black() const override {
         if (abs(w - 1) < tol){
             return true;
@@ -131,7 +131,7 @@ class warm_CMYK:public Colour {
 public:
     warm_CMYK(): Colour(0, 0, 0, 0) {};
     warm_CMYK(double x, double y, double z, double w): Colour(x, y, z, w) {};
-    ~warm_CMYK();
+    ~warm_CMYK() {};
     bool is_clear() const override{
         if (!(is_black()) && abs(w) < tol) {
             if (abs(x) < tol && abs(y) < tol && abs(z) > tol) {
@@ -167,11 +167,6 @@ std::ostream & operator<<(std::ostream &out, const Colour &c){
     out << "(" << c.x << ", " << c.y << ", " << c.z << ")";
     return out;
 }
-
-
-warm_CMYK::~warm_CMYK(){};
-Colour::~Colour() {}
-RGB::~RGB() {}
 
 int main() {
     Colour c1(0.1, 0.2, 0.3, 0.1);
