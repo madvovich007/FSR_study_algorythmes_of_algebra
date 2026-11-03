@@ -51,19 +51,19 @@ public:
         }
         return false;
     }
-    double get_red(RGB &c) {
+    double get_red() {
         return x;
     }
 
-    double get_green(RGB &c) {
+    double get_green() {
         return y;
     }
 
-    double get_blue(RGB &c) {
+    double get_blue() {
         return z;
     }
 
-    double get_alpha(RGB &c) {
+    double get_alpha() {
         return w;
     }
     void set_red(double c) {
@@ -94,19 +94,19 @@ public:
         }
         return false;
     }
-    double get_cyan(CMYK &c) {
+    double get_cyan() {
         return x;
     }
 
-    double get_magenta(CMYK &c) {
+    double get_magenta() {
         return y;
     }
 
-    double get_yellow(CMYK &c) {
+    double get_yellow() {
         return z;
     }
 
-    double get_black(CMYK &c) {
+    double get_black() {
         return w;
     }
 
@@ -164,7 +164,7 @@ Colour operator+(const Colour& c1, const Colour& c2) {
 }
 
 std::ostream & operator<<(std::ostream &out, const Colour &c){
-    out << "(" << c.x << ", " << c.y << ", " << c.z << ")";
+    out << "(" << c.x << ", " << c.y << ", " << c.z << ", " << c.w << ")";
     return out;
 }
 
@@ -173,5 +173,17 @@ int main() {
     RGB c2(0.2, 0.3, 0.4, 0.5);
     CMYK c3(0.4, 0.5, 0.6, 0.8);
     warm_CMYK c4(0.6, 0.7, 0.8, 0.9);
+    Colour c5(0.2, 0.2, 0.2, 0.2);
+    c2.set_alpha(0.1);
+    c2.set_red(0.1);
+    c2.set_blue(0.1);
+    c2.set_green(0.1);
+    std::cout << c2 << ", red -  " << c2.get_red() << ", green - " << c2.get_green() << ", blue - " << c2.get_blue() << ", alpha - " << c2.get_alpha() << '\n';
+    c3.set_cyan(0.2);
+    c3.set_yellow(0.2);
+    c3.set_magenta(0.2);
+    c3.set_black(1.0);
+    std::cout << c3 << ", cyan -  " << c3.get_cyan() << ", magenta - " << c3.get_magenta() << ", yellow - " << c3.get_yellow() << ", black - " << c3.get_black() << '\n';
     std::cout << c1 << " " << c2 << " " << c3 << " " << c4 << '\n';
+    std::cout <<c4 << " " << c4.is_clear() << " - is clear, " << c4.is_black() << " - is black" << '\n';
 }
