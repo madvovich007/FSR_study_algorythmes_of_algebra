@@ -18,7 +18,7 @@ double min(double a, double b) {
 }
 
 double abs(double x) {
-    if (x < -tol) {
+    if (x < 0.0) {
         return -x;
     }
     return x;
@@ -184,6 +184,6 @@ int main() {
     c3.set_magenta(0.2);
     c3.set_black(1.0);
     std::cout << c3 << ", cyan -  " << c3.get_cyan() << ", magenta - " << c3.get_magenta() << ", yellow - " << c3.get_yellow() << ", black - " << c3.get_black() << '\n';
-    std::cout << c1 << " " << c2 << " " << c3 << " " << c4 << '\n';
+    std::cout << c1 << " " << c2 << " " << c3 << " " << c4 << " " << c1 + c5 << '\n';
     std::cout <<c4 << " " << c4.is_clear() << " - is clear, " << c4.is_black() << " - is black" << '\n';
 }
