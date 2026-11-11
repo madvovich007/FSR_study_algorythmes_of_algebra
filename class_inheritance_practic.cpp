@@ -54,15 +54,12 @@ public:
     double get_red() {
         return x;
     }
-
     double get_green() {
         return y;
     }
-
     double get_blue() {
         return z;
     }
-
     double get_alpha() {
         return w;
     }
@@ -77,7 +74,6 @@ public:
     void set_blue(double c) {
         z = c;
     }
-
     void set_alpha(double c) {
         w = c;
     }
@@ -97,33 +93,39 @@ public:
     double get_cyan() {
         return x;
     }
-
     double get_magenta() {
         return y;
     }
-
     double get_yellow() {
         return z;
     }
-
     double get_black() {
         return w;
     }
-
     void set_cyan(double c) {
         x = c;
     }
-
     void set_magenta(double c) {
         y = c;
     }
-
     void set_yellow(double c) {
         z = c;
     }
-
     void set_black(double c) {
         w = c;
+    }
+    bool is_clear() const override{
+        if (!(is_black()) && abs(w) < tol) {
+            if ((abs(x) < tol && abs(y) < tol && abs(z) > tol)
+                || (abs(x) > tol && abs(y) < tol && abs(z) < tol)
+                || (abs(x) < tol && abs(y) > tol && abs(z) < tol)
+                || (abs(x - y) < tol && abs(z) < tol && abs(x) > tol)
+                || (abs(x - z) < tol && abs(y) < tol && abs(x) > tol)
+                || (abs(y - z) < tol && abs(x) < tol && abs(y) > tol)) {
+                return true;
+            }
+        }
+        return false;
     }
 };
 
@@ -134,30 +136,11 @@ public:
     ~warm_CMYK() {};
     bool is_clear() const override{
         if (!(is_black()) && abs(w) < tol) {
-            if (abs(x) < tol && abs(y) < tol && abs(z) > tol) {
-                return true;
-            }
-            if (abs(x) > tol && abs(y) < tol && abs(z) < tol){
-                return true;
-            }
-            if (abs(x) < tol && abs(y) > tol && abs(z) < tol){
-                return true;
-            }
-            if (abs(x - y) < tol && abs(z) < tol && abs(x) > tol) {
-                return true;
-            }
-            if (abs(x - z) < tol && abs(y) < tol && abs(x) > tol) {
-                return true;
-            }
-            if (abs(y - z) < tol && abs(x) < tol && abs(y) > tol) {
-                return true;
-            }
+            return (abs(y) < 1 - tol || abs(z) < 1 - tol);
         }
         return false;
     }
 };
-
-
 
 Colour operator+(const Colour& c1, const Colour& c2) {
     return Colour(min(c1.x + c2.x, MAX_colour), min(c1.y + c2.y, MAX_colour), min(c1.z + c2.z, MAX_colour), min(c1.w + c2.w, 1.0));

@@ -27,12 +27,14 @@ public:
     ~fraction();
     fraction(int c):numerator(c), denominator(1) {};
     fraction(int a, int b): numerator(a), denominator(b) {};
-    friend fraction operator+(fraction& c1, fraction& c2);
-    friend fraction operator-(fraction& c1, fraction& c2);
-    friend fraction operator+(fraction& c1, int c2);
-    friend fraction operator-(fraction& c1, int c2);
-    friend fraction operator*(fraction& c1, int coefficient);
-    friend fraction operator-(fraction& c1);
+    friend fraction operator+(const fraction& c1, const fraction& c2);
+    friend fraction operator-(const fraction& c1, const fraction& c2);
+    friend fraction operator+(const fraction& c1, int c2);
+    friend fraction operator-(const fraction& c1, int c2);
+    friend fraction operator*(const fraction& c1, int coefficient);
+    friend fraction operator*(const fraction& c1, const fraction& c2);
+    friend fraction operator-(const fraction& c1);
+    friend fraction evklid(const fraction &c);
     friend std::ostream & operator<<(std::ostream & out, const fraction& c);
     friend std::istream & operator>>(std::istream & in, fraction& c);
     operator double();
@@ -41,27 +43,31 @@ public:
 
 fraction::~fraction() {};
 
-fraction operator+(fraction& c1, fraction& c2) {
-    return fraction(c1.numerator * c2.denominator + c1.denominator * c2.numerator, c1.denominator * c2.denominator);
+fraction operator+(const fraction& c1, const fraction& c2) {
+    return evklid(fraction(c1.numerator * c2.denominator + c1.denominator * c2.numerator, c1.denominator * c2.denominator));
 }
-fraction operator-(fraction& c1, fraction& c2) {
-    return fraction(c1.numerator * c2.denominator - c1.denominator * c2.numerator, c1.denominator * c2.denominator);
-}
-
-fraction operator + (fraction& c1, int c2) {
-    return fraction(c1.numerator + c2 * c1.denominator, c1.denominator);
+fraction operator-(const fraction& c1, const fraction& c2) {
+    return evklid(fraction(c1.numerator * c2.denominator - c1.denominator * c2.numerator, c1.denominator * c2.denominator));
 }
 
-fraction operator-(fraction& c1, int c2) {
-    return fraction(c1.numerator - c2 * c1.denominator, c1.denominator);
+fraction operator + (const fraction& c1, int c2) {
+    return evklid(fraction(c1.numerator + c2 * c1.denominator, c1.denominator));
 }
 
-fraction operator*(fraction& c1, int coefficient) {
-    return fraction(c1.numerator *  coefficient, c1.denominator);
+fraction operator-(const fraction& c1, int c2) {
+    return evklid(fraction(c1.numerator - c2 * c1.denominator, c1.denominator));
 }
 
-fraction operator-(fraction& c1) {
-    return fraction(- c1.numerator, c1.denominator);
+fraction operator*(const fraction& c1, const fraction& c2) {
+    return evklid(fraction(c1.numerator * c2.numerator, c1.denominator * c2.denominator));
+}
+
+fraction operator*(const fraction& c1, int coefficient) {
+    return evklid(fraction(c1.numerator *  coefficient, c1.denominator));
+}
+
+fraction operator-(const fraction& c1) {
+    return evklid(fraction((-1) * c1.numerator, c1.denominator));
 }
 
 std::ostream & operator<<(std::ostream &out, const fraction &c){
@@ -85,6 +91,19 @@ fraction::operator bool(){
     return 1;
 }
 
+fraction evklid(const fraction& c) {
+    int a = c.numerator;
+    int b = c.denominator;
+    a = max(a , -a);
+    b = max(b, -b);
+    while (b != 0) {
+        int tmp = a % b;
+        a = b;
+        b = tmp;
+    }
+    return fraction(c.numerator / a, c.denominator / a);
+}
+
 int main() {
     fraction fraction1(108, 101);
     fraction fraction2;
@@ -95,4 +114,3 @@ int main() {
     std::cout << (double)fraction1 << '\n';
     std::cout << (bool)fraction2 << '\n';
 }
-

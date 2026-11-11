@@ -35,8 +35,8 @@ public:
     friend std::ostream & operator<<(std::ostream & out, const Colour& c);
     friend std::istream & operator>>(std::istream & in, Colour& c);
 
-    friend Colour operator*(Colour & c, fraction & f);
-    friend Colour operator*(fraction & f, Colour & c);
+    friend Colour operator*(Colour & c, const fraction & f);
+    friend Colour operator*(const fraction & f, Colour & c);
 
     operator double();
     operator bool();
@@ -51,22 +51,84 @@ public:
     ~fraction();
     fraction(int c):numerator(c), denominator(1) {};
     fraction(int a, int b): numerator(a), denominator(b) {};
-    friend fraction operator+(fraction& c1, fraction& c2);
-    friend fraction operator-(fraction& c1, fraction& c2);
-    friend fraction operator+(fraction& c1, int c2);
-    friend fraction operator-(fraction& c1, int c2);
-    friend fraction operator*(fraction& c1, int coefficient);
-    friend fraction operator*(fraction& c1, fraction& c2);
-    friend fraction operator-(fraction& c1);
+    friend fraction operator+(const fraction& c1, const fraction& c2);
+    friend fraction operator-(const fraction& c1, const fraction& c2);
+    friend fraction operator+(const fraction& c1, int c2);
+    friend fraction operator-(const fraction& c1, int c2);
+    friend fraction operator*(const fraction& c1, int coefficient);
+    friend fraction operator*(const fraction& c1, const fraction& c2);
+    friend fraction operator-(const fraction& c1);
+    friend fraction evklid(const fraction &c);
     friend std::ostream & operator<<(std::ostream & out, const fraction& c);
     friend std::istream & operator>>(std::istream & in, fraction& c);
-
-    friend Colour operator*(Colour& c, fraction& f);
-    friend Colour operator*(fraction& f, Colour& c);
-
     operator double();
     operator bool();
+    friend Colour operator*(Colour & c, const fraction & f);
+    friend Colour operator*(const fraction & f, Colour & c);
 };
+
+fraction::~fraction() {};
+
+fraction operator+(const fraction& c1, const fraction& c2) {
+    return evklid(fraction(c1.numerator * c2.denominator + c1.denominator * c2.numerator, c1.denominator * c2.denominator));
+}
+fraction operator-(const fraction& c1, const fraction& c2) {
+    return evklid(fraction(c1.numerator * c2.denominator - c1.denominator * c2.numerator, c1.denominator * c2.denominator));
+}
+
+fraction operator + (const fraction& c1, int c2) {
+    return evklid(fraction(c1.numerator + c2 * c1.denominator, c1.denominator));
+}
+
+fraction operator-(const fraction& c1, int c2) {
+    return evklid(fraction(c1.numerator - c2 * c1.denominator, c1.denominator));
+}
+
+fraction operator*(const fraction& c1, const fraction& c2) {
+    return evklid(fraction(c1.numerator * c2.numerator, c1.denominator * c2.denominator));
+}
+
+fraction operator*(const fraction& c1, int coefficient) {
+    return evklid(fraction(c1.numerator *  coefficient, c1.denominator));
+}
+
+fraction operator-(const fraction& c1) {
+    return evklid(fraction((-1) * c1.numerator, c1.denominator));
+}
+
+std::ostream & operator<<(std::ostream &out, const fraction &c){
+    out << "(" << c.numerator << "/ " << c.denominator << ")";
+    return out;
+}
+
+std::istream & operator>>(std::istream & in, fraction& c){
+    in >> c.numerator >> c.denominator;
+    return in;
+}
+
+fraction::operator double() {
+    return (double)numerator / denominator ;
+}
+//меньше ли 1
+fraction::operator bool(){
+    if (numerator < denominator) {
+        return 0;
+    }
+    return 1;
+}
+
+fraction evklid(const fraction& c) {
+    int a = c.numerator;
+    int b = c.denominator;
+    a = max(a , -a);
+    b = max(b, -b);
+    while (b != 0) {
+        int tmp = a % b;
+        a = b;
+        b = tmp;
+    }
+    return fraction(c.numerator / a, c.denominator / a);
+}
 
 Colour::~Colour() {};
 
@@ -87,10 +149,6 @@ Colour operator-(Colour& c1, int c2) {
 
 Colour operator*(int coefficient, Colour& c1) {
     return Colour(c1.red * coefficient, c1.green * coefficient, c1.blue * coefficient);
-}
-
-fraction operator*(fraction& c1, fraction& c2) {
-    return fraction(c1.numerator * c2.numerator, c1.denominator * c2.denominator);
 }
 
 Colour operator-(Colour& c1) {
@@ -118,66 +176,22 @@ Colour::operator bool(){
     return 1;
 }
 
-fraction::~fraction() {};
 
-fraction operator+(fraction& c1, fraction& c2) {
-    return fraction(c1.numerator * c2.denominator + c1.denominator * c2.numerator, c1.denominator * c2.denominator);
-}
-fraction operator-(fraction& c1, fraction& c2) {
-    return fraction(c1.numerator * c2.denominator - c1.denominator * c2.numerator, c1.denominator * c2.denominator);
-}
-
-fraction operator + (fraction& c1, int c2) {
-    return fraction(c1.numerator + c2 * c1.denominator, c1.denominator);
-}
-
-fraction operator-(fraction& c1, int c2) {
-    return fraction(c1.numerator - c2 * c1.denominator, c1.denominator);
-}
-
-fraction operator*(fraction& c1, int coefficient) {
-    return fraction(c1.numerator *  coefficient, c1.denominator);
-}
-
-fraction operator-(fraction& c1) {
-    return fraction(- c1.numerator, c1.denominator);
-}
-
-std::ostream & operator<<(std::ostream &out, const fraction &c){
-    out << "(" << c.numerator << "/ " << c.denominator << ")";
-    return out;
-}
-
-std::istream & operator>>(std::istream & in, fraction& c){
-    in >> c.numerator >> c.denominator;
-    return in;
-}
-
-fraction::operator double() {
-    return numerator * 1.0 / denominator ;
-}
-//меньше ли 1
-fraction::operator bool(){
-    if (numerator < denominator) {
-        return 0;
-    }
-    return 1;
-}
-
-Colour operator*(Colour& c, fraction & f) {
+Colour operator*(Colour& c, const fraction& f) {
     if (f.denominator == 0) {
         return Colour();
     }
     return Colour(c.red * f.numerator / f.denominator, c.green * f.numerator / f.denominator, c.blue * f.numerator / f.denominator);
 }
 
-Colour operator*(fraction & f, Colour & c){
+Colour operator*(const fraction& f, Colour& c) {
     return c * f;
 }
 
+
 int main() {
     fraction fraction1(1, 2);
-    Colour colour1(100, 101, 104);
+    Colour colour1(100, 102, 104);
     std::cout << colour1 * fraction1 << ", " << fraction1 * colour1 << '\n';
 }
 

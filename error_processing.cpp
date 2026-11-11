@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 class Legendre_error {
 protected:
@@ -19,21 +20,21 @@ public:
     };
 };
 
-class Order_error: public Legendre_error {
+class Power_error: public Legendre_error {
 private:
     int n;
 public:
-    Order_error(int n1): Legendre_error("Bad order"), n(n1){};
+    Power_error(int n1): Legendre_error("Low Power"), n(n1){};
     int get_n() {
         return n;
     }
 };
 
-class big_Order_error: public Legendre_error {
+class big_Power_error: public Legendre_error {
 private:
     int n;
 public:
-    big_Order_error(int n1): Legendre_error("too big order"), n(n1){};
+    big_Power_error(int n1): Legendre_error("too big Power"), n(n1){};
     int get_n() {
         return n;
     }
@@ -55,10 +56,10 @@ public:
     };
     double calculate(int n) {
         if (n < 0) {
-            throw Order_error(n);
+            throw Power_error(n);
         }
         if (n >= 1000) {
-            throw big_Order_error(n);
+            throw big_Power_error(n);
         }
         if (n < poly_size) {
             return polynom[n];
@@ -77,14 +78,39 @@ public:
     Input_err(const char* str) : Legendre_error(str){};
 };
 
+class NotFound_err: public Legendre_error {
+public:
+    NotFound_err(const char* str) : Legendre_error(str){};
+};
 
 int main(void) {
+    std::ifstream infile("Input.txt");
+    if (!infile.is_open()) {
+        try {
+            throw NotFound_err("File input not found");
+        }
+        catch (NotFound_err & err) {
+            std::cerr << err.type_err() << '\n';
+            return 0;
+        }
+    }
+    std::ofstream outfile("output.txt");
+    if (!outfile.is_open()) {
+        try {
+            throw NotFound_err("File output not found");
+        }
+        catch (NotFound_err & err) {
+            std::cerr << err.type_err() << '\n';
+            infile.close();
+            return 0;
+        }
+    }
     int flag = 1;
     double x;
     int n;
     while (flag) {
-        if (!(std::cin >> x >> n)) {
-            if (std::cin.eof()) {
+        if (!(infile >> x >> n)) {
+            if (infile.eof()) {
                 flag = 0;
             }
             else {
@@ -94,24 +120,27 @@ int main(void) {
                 catch (Input_err & err) {
                     std::cout << err.type_err() << '\n';
                 }
+                infile.clear();
             }
         }
         else {
             try {
                 Legendre c(x);
                 double res = c.calculate(n);
-                std::cout << "P" << n << " (" << x << ") = " << res << '\n';
+                outfile << "P" << n << " (" << x << ") = " << res << '\n';
             }
-            catch (Order_error & err) {
-                std::cout << err.get_n() << ": " << err.type_err() << '\n';
+            catch (Power_error & err) {
+                outfile << err.get_n() << ": " << err.type_err() << '\n';
             }
             catch (Point_error & err) {
-                std::cout << err.get_point() << ": " << err.type_err() << '\n';
+                outfile << err.get_point() << ": " << err.type_err() << '\n';
             }
-            catch (big_Order_error & err) {
-                std::cout << err.get_n() << ": " << err.type_err() << '\n';
+            catch (big_Power_error & err) {
+                outfile << err.get_n() << ": " << err.type_err() << '\n';
             }
         }
     }
+    infile.close();
+    outfile.close();
     return 0;
 }
