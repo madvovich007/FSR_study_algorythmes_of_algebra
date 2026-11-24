@@ -126,7 +126,6 @@ public:
     double electric_range() const override {
         return battery_charge;
     }
-
 };
 
 bool operator<(const Cars& c1, const Cars& c2) {

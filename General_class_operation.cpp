@@ -58,7 +58,7 @@ public:
     friend fraction operator*(const fraction& c1, int coefficient);
     friend fraction operator*(const fraction& c1, const fraction& c2);
     friend fraction operator-(const fraction& c1);
-    friend fraction evklid(const fraction &c);
+    friend fraction Euclid_method(const fraction &c);
     friend std::ostream & operator<<(std::ostream & out, const fraction& c);
     friend std::istream & operator>>(std::istream & in, fraction& c);
     operator double();
@@ -70,30 +70,30 @@ public:
 fraction::~fraction() {};
 
 fraction operator+(const fraction& c1, const fraction& c2) {
-    return evklid(fraction(c1.numerator * c2.denominator + c1.denominator * c2.numerator, c1.denominator * c2.denominator));
+    return Euclid_method(fraction(c1.numerator * c2.denominator + c1.denominator * c2.numerator, c1.denominator * c2.denominator));
 }
 fraction operator-(const fraction& c1, const fraction& c2) {
-    return evklid(fraction(c1.numerator * c2.denominator - c1.denominator * c2.numerator, c1.denominator * c2.denominator));
+    return Euclid_method(fraction(c1.numerator * c2.denominator - c1.denominator * c2.numerator, c1.denominator * c2.denominator));
 }
 
 fraction operator + (const fraction& c1, int c2) {
-    return evklid(fraction(c1.numerator + c2 * c1.denominator, c1.denominator));
+    return Euclid_method(fraction(c1.numerator + c2 * c1.denominator, c1.denominator));
 }
 
 fraction operator-(const fraction& c1, int c2) {
-    return evklid(fraction(c1.numerator - c2 * c1.denominator, c1.denominator));
+    return Euclid_method(fraction(c1.numerator - c2 * c1.denominator, c1.denominator));
 }
 
 fraction operator*(const fraction& c1, const fraction& c2) {
-    return evklid(fraction(c1.numerator * c2.numerator, c1.denominator * c2.denominator));
+    return Euclid_method(fraction(c1.numerator * c2.numerator, c1.denominator * c2.denominator));
 }
 
 fraction operator*(const fraction& c1, int coefficient) {
-    return evklid(fraction(c1.numerator *  coefficient, c1.denominator));
+    return Euclid_method(fraction(c1.numerator *  coefficient, c1.denominator));
 }
 
 fraction operator-(const fraction& c1) {
-    return evklid(fraction((-1) * c1.numerator, c1.denominator));
+    return Euclid_method(fraction((-1) * c1.numerator, c1.denominator));
 }
 
 std::ostream & operator<<(std::ostream &out, const fraction &c){
@@ -117,7 +117,7 @@ fraction::operator bool(){
     return 1;
 }
 
-fraction evklid(const fraction& c) {
+fraction Euclid_method(const fraction& c) {
     int a = c.numerator;
     int b = c.denominator;
     a = max(a , -a);
@@ -187,7 +187,6 @@ Colour operator*(Colour& c, const fraction& f) {
 Colour operator*(const fraction& f, Colour& c) {
     return c * f;
 }
-
 
 int main() {
     fraction fraction1(1, 2);
