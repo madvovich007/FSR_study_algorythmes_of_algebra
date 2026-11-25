@@ -144,12 +144,15 @@ int main(void){
     Gas c4("GAC Empow", 177, 'F', 10000, 2023, 50);
     Diesel c5("BMW X1", 190, 'A', 60000, 2020);
     Electric c6("Tesla Model 3", 283, 'R', 20000, 2023, 300, 100);
+    Cars * cars[] = {&c1, &c2, &c3, &c4, &c5, &c6};
+    int n = 6;
+    for (int i = 0; i < n; i++) {
+        std::cout << *cars[i] << " charge: " << cars[i]->charge(30) << " range: " << cars[i]->electric_range() << '\n';
+    }
     std::cout << c1 << " " << c2 << " " << c3 << " " << c4 << " " << c5 << " " << c6 << '\n';
     c1.set_mileage_roll_back(50000);
     std::cout << c1 << " " << c1.get_mark() << " " << c1.get_hp() << " " << c1.get_drive() << " " << c1.get_mileage() << " " << c1.get_create_year() << " " << c1.get_cost() << '\n';
     std::cout << (c1 < c2) << " " << (c5 < c4) << " " << (c3 < c6) << '\n';
     std::cout << c2.can_tow() << " " << c5.can_tow() << '\n';
     std::cout << c3.get_fuel() << " " << c3.get_battery() << " " << c4.get_fuel() << " " << c4.get_battery() << '\n';
-    std::cout << c1.charge(30) << " " << c2.charge(30) << " " << c3.charge(30) << " " << c4.charge(30) << " " << c5.charge(30) << " " << c6.charge(30) << '\n';
-    std::cout << c1.electric_range() << " " << c2.electric_range() << " " << c3.electric_range() << " " << c4.electric_range() << " " << c5.electric_range() << " " << c6.electric_range() << '\n';
 }

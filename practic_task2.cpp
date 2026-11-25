@@ -1,12 +1,6 @@
 #include <iostream>
 
 template <class Container, class Compare>
-void swap(Container& a, Container& b) {
-    Container cmp = a;
-    a = b;
-    b = cmp;
-}
-
 void quick_sort(Container& c, int n){
     if (n <= 1){
         return;
@@ -16,10 +10,10 @@ void quick_sort(Container& c, int n){
     int j = n - 1;
     if (n > 1){
         while (i <= j){
-            while (Compare::cmp(c[i], pivot) < 0){
+            while (Compare::cmp(c[i], pivot)){
                 i++;
             }
-            while (Compare::cmp(c[j], pivot) > 0){
+            while (!(Compare::cmp(c[j], pivot))){
                 j--;
             }
             if (i <= j){
@@ -31,8 +25,4 @@ void quick_sort(Container& c, int n){
         quick_sort(c, j + 1);
         quick_sort(c + i, n - i);
     }
-}
-
-int main(void) {
-
 }

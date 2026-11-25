@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstring>
+#include <cstdio>
+using namespace std;
 
 
 class Duration {
@@ -41,6 +43,9 @@ public:
     friend Date operator+(const Date& d, const Duration& dur);
     friend Date operator-(const Date& d, const Duration& dur);
     friend Duration operator-(const Date& d1, const Date& d2);
+    friend Date operator+(const Duration& dur, const Date& d) {
+        return d + dur;
+    }
     friend ostream& operator<<(ostream& out, const Date& d);
     friend istream& operator>>(istream& in, Date& d);
 };
@@ -175,7 +180,6 @@ int main() {
     cin >> d_input;
     cout << "You chose: " << d_input << endl;
 
-
     Date date2(31, 10, 2026);
     cout << "Tests for Date" << endl;
     int date_int = date2; 
@@ -211,5 +215,13 @@ int main() {
     Date date_input;
     cin >> date_input;
     cout << "You chose " << date_input << endl;
+
+
+
+    Date x = 5 + d_a;
+    Duration y = dur + 5;
+    cout << x << " " << y << "\n";
+
+
     return 0;
 }
