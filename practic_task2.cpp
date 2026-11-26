@@ -1,28 +1,26 @@
 #include <iostream>
 
-template <class Container, class Compare>
-void quick_sort(Container& c, int n){
-    if (n <= 1){
+template <class Container, class Comparator>
+void quick_sort(Container& c, int n, int left, int right){
+    if (left >= right){
         return;
     }
-    Container pivot = c[n / 2];
-    int i = 0;
-    int j = n - 1;
-    if (n > 1){
-        while (i <= j){
-            while (Compare::cmp(c[i], pivot)){
-                i++;
-            }
-            while (!(Compare::cmp(c[j], pivot))){
-                j--;
-            }
-            if (i <= j){
-                swap(c[i], c[j]);
-                i++;
-                j--;
-            }
+    auto pivot = c[(left + right) / 2];
+    int i = left;
+    int j = right;
+    while (i <= j){
+        while (Comparator::compare(c[i], pivot)){
+            i++;
         }
-        quick_sort(c, j + 1);
-        quick_sort(c + i, n - i);
+        while (Comparator::compare(pivot, c[j])){
+            j--;
+        }
+        if (i <= j){
+            c.swap(i, j);
+            i++;
+            j--;
+        }
     }
+    quick_sort<Container, Comparator>(c, n, left, j);
+    quick_sort<Container, Comparator>(c, n, i, right);
 }
